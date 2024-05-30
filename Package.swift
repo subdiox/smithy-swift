@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -34,7 +34,7 @@ let package = Package(
         .library(name: "SmithyTestUtil", targets: ["SmithyTestUtil"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/awslabs/aws-crt-swift.git", exact: "0.26.0"),
+        .package(url: "https://github.com/subdiox/aws-crt-swift.git", branch: "0.26.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
     ],
     targets: [
@@ -44,9 +44,12 @@ let package = Package(
                 "SmithyXML",
                 .product(name: "AwsCommonRuntimeKit", package: "aws-crt-swift"),
                 .product(name: "Logging", package: "swift-log"),
-            ]
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
-        .target(name: "SmithyReadWrite"),
+        .target(
+            name: "SmithyReadWrite"
+        ),
         .target(
             name: "SmithyXML",
             dependencies: [
@@ -61,15 +64,18 @@ let package = Package(
         ),
         .target(
             name: "SmithyTestUtil",
-            dependencies: ["ClientRuntime"]
+            dependencies: ["ClientRuntime"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "ClientRuntimeTests",
-            dependencies: ["ClientRuntime", "SmithyTestUtil"]
+            dependencies: ["ClientRuntime", "SmithyTestUtil"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "SmithyXMLTests",
-            dependencies: ["SmithyXML", "ClientRuntime"]
+            dependencies: ["SmithyXML", "ClientRuntime"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "SmithyTimestampsTests",
@@ -79,5 +85,7 @@ let package = Package(
             name: "SmithyTestUtilTests",
             dependencies: ["SmithyTestUtil"]
         ),
-    ].compactMap { $0 }
+    ].compactMap { $0 },
+    cLanguageStandard: .c11,
+    cxxLanguageStandard: .cxx11
 )
