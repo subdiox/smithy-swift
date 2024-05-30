@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -36,7 +36,7 @@ let package = Package(
         .library(name: "SmithyTestUtil", targets: ["SmithyTestUtil"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/awslabs/aws-crt-swift.git", exact: "0.30.0"),
+        .package(url: "https://github.com/subdiox/aws-crt-swift.git", exact: "0.30.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
     ],
     targets: [
@@ -51,7 +51,8 @@ let package = Package(
             ],
             resources: [
                 .copy("PrivacyInfo.xcprivacy")
-            ]
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .target(
             name: "SmithyReadWrite",
@@ -87,7 +88,8 @@ let package = Package(
         ),
         .target(
             name: "SmithyTestUtil",
-            dependencies: ["ClientRuntime"]
+            dependencies: ["ClientRuntime"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "ClientRuntimeTests",
@@ -96,15 +98,18 @@ let package = Package(
         ),
         .testTarget(
             name: "SmithyXMLTests",
-            dependencies: ["SmithyXML", "ClientRuntime"]
+            dependencies: ["SmithyXML", "ClientRuntime"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "SmithyJSONTests",
-            dependencies: ["SmithyJSON", "ClientRuntime"]
+            dependencies: ["SmithyJSON", "ClientRuntime"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "SmithyFormURLTests",
-            dependencies: ["SmithyFormURL", "ClientRuntime"]
+            dependencies: ["SmithyFormURL", "ClientRuntime"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "SmithyTimestampsTests",
@@ -112,9 +117,11 @@ let package = Package(
         ),
         .testTarget(
             name: "SmithyTestUtilTests",
-            dependencies: ["SmithyTestUtil"]
+            dependencies: ["SmithyTestUtil"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
-    ].compactMap { $0 }
+    ].compactMap { $0 },
+    cxxLanguageStandard: .cxx11
 )
 
 func addTestServiceTargets() {
